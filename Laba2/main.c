@@ -13,6 +13,7 @@ int main(int argc, char** argv){
     int count = 0;
     printf("Укажите кол-во строк:\n");
     scanf("%d", &count);
+    getchar();
 
     char** strings = (char**)calloc(count, sizeof(char*));
     int* len_of_strings = (int*)calloc(count, sizeof(int));
@@ -45,14 +46,15 @@ void rev_abc_sort(char*** arr, int** arr_of_len, int len, int* count_of_ops, int
 
 int inp_str(char** string, int maxlen){
     char buf[maxlen];
-    scanf("%s", buf);
-    getchar();
+    /* scanf("%s", buf);
+    getchar(); */
+    fgets(buf, maxlen, stdin);
 
     int size = 0;
     for(; buf[size] != 0; size++);
 
     char* ds = (char*)calloc(size, sizeof(char));
-    for(int i = 0; i < size; i++){
+    for(int i = 0; i < size - 1; i++){
         ds[i] = buf[i];
     }
     *string = ds;
