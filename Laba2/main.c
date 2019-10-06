@@ -45,13 +45,14 @@ void rev_abc_sort(char*** arr, int** arr_of_len, int len, int* count_of_ops, int
 
 int inp_str(char** string, int maxlen){
     char buf[maxlen];
-    read(STDIN_FILENO, buf, maxlen);
+    scanf("%s", buf);
+    getchar();
 
     int size = 0;
     for(; buf[size] != 0; size++);
 
     char* ds = (char*)calloc(size, sizeof(char));
-    for(int i = 0; i < size - 1; i++){
+    for(int i = 0; i < size; i++){
         ds[i] = buf[i];
     }
     *string = ds;
