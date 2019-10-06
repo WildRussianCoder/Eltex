@@ -41,13 +41,19 @@ int main(int argc, char** argv){
 }
 
 void rev_abc_sort(char*** arr, int** arr_of_len, int len, int* count_of_ops, int* len_of_first_word){
-
+    for(int i = len - 1; i >= 0; i--){
+        for(int j = 0; j < i; j++){
+            if(strcmp(*arr[j], *arr[j+1]) < 0){
+                char* tmp = *arr[j];
+                *arr[j] = *arr[j+1];
+                *arr[j+1] = tmp;
+            }
+        }
+    }
 }
 
 int inp_str(char** string, int maxlen){
     char buf[maxlen];
-    /* scanf("%s", buf);
-    getchar(); */
     fgets(buf, maxlen, stdin);
 
     int size = 0;

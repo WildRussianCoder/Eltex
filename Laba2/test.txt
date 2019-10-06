@@ -1,7 +1,9 @@
-6
-Hello
-World
-Kurwa
-jopa
-zhopa
-polnaya
+8
+a
+b
+c
+d
+e
+f
+g
+h
