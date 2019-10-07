@@ -1,9 +1,4 @@
-8
-a
-b
-c
-d
-e
-f
-g
-h
+3
+abc
+abcd
+cdef

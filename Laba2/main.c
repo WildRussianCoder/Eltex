@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 #define BUF_SIZE 1024
 
@@ -36,20 +35,36 @@ int main(int argc, char** argv){
         out_str(strings[i], len_of_strings[i], i);
     }
 
+    printf("\nКоличество операций: %d\n", ops);
+    printf("Длина первой строки: %d\n", first_len);
+
     free(len_of_strings);
     free(strings);
 }
 
-void rev_abc_sort(char*** arr, int** arr_of_len, int len, int* count_of_ops, int* len_of_first_word){
-    for(int i = len - 1; i >= 0; i--){
+void rev_abc_sort(char*** arr, int** arr_of_len, int size, int* count_of_ops, int* len_of_first_word){
+    char** tbl = *arr;
+    int* lens = *arr_of_len;
+    int ops = 0;
+
+    for(int i = size - 1; i >= 0; i--){
         for(int j = 0; j < i; j++){
-            if(strcmp(*arr[j], *arr[j+1]) < 0){
-                char* tmp = *arr[j];
-                *arr[j] = *arr[j+1];
-                *arr[j+1] = tmp;
+            if(strcmp(tbl[j], tbl[j + 1]) < 0){
+                char* tmp = tbl[j];
+                tbl[j] = tbl[j + 1];
+                tbl[j + 1] = tmp;
+                
+                int tmp_len = lens[j];
+                lens[j] = lens[j + 1];
+                lens[j + 1] = tmp_len;
+
+                ops++;
             }
         }
     }
+
+    *count_of_ops = ops;
+    *len_of_first_word = lens[0];
 }
 
 int inp_str(char** string, int maxlen){
