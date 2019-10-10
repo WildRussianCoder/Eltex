@@ -1,9 +1,11 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 
-char* name_of_input_file;
+char* name_of_intput_file;
 char name_of_output_file[256];
+char symbol;
+char buf[2];
 
 int main(int argc, char** argv){
 
@@ -12,17 +14,17 @@ int main(int argc, char** argv){
         return 1;
     }
 
-    char symbol = argv[2][0];
-    name_of_input_file = argv[1];
-    for(int i = 0; name_of_input_file[i] != '.'; i++) name_of_output_file[i] = name_of_input_file[i];
+    name_of_intput_file = argv[1];
+    for(int i = 0; name_of_intput_file[i] != '.'; i++) name_of_output_file[i] = name_of_intput_file[i];
     strcat(name_of_output_file, ".out");
+    symbol = argv[2][0];
 
-    printf("Имя входного файла: %s\n", name_of_input_file);
+    printf("Имя входного файла: %s\n", name_of_intput_file);
     printf("Имя выходного файла: %s\n", name_of_output_file);
     printf("Символ: %c\n", symbol);
 
-    FILE* input_file = fopen(name_of_input_file, "r");
-    FILE* output_file = fopen(name_of_output_file, "w");
+    FILE* input_file = fopen(name_of_intput_file, "rb");
+    FILE* output_file = fopen(name_of_output_file, "wb");
 
     if(input_file == NULL){
         printf("Ошибка открытия входного файла\n");
@@ -33,16 +35,14 @@ int main(int argc, char** argv){
         return 1;
     }
 
-    while(1){
-        char* buf = (char*)calloc(1024, sizeof(char));
-        if(fgets(buf, 256, input_file) == NULL) break;
+    while(!feof(input_file)){
+        buf[0] = fgetc(input_file);
+        
+        if(strspn(buf, "!@#$%%^&*()_+`=-,./';][\\{}|:\"<>?") == 1) buf[0] = symbol;
 
-        if(buf[0] == symbol) fputs(buf, output_file);
-        free(buf);
+        fputc(buf[0], output_file);
     }
-
     fclose(input_file);
     fclose(output_file);
-    printf("Работа завершена\n");
     return 0;
 }
