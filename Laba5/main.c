@@ -1,6 +1,16 @@
 #include <stdio.h>
 #include <dlfcn.h>
 
+#ifdef STATIC
+extern int Mod(int a, int b);
+extern int Div(int a, int b);
+#endif
+
+#ifdef DYNOSTATIC
+extern int Mod(int a, int b);
+extern int Div(int a, int b);
+#endif
+
 int main(){
     int a, b;
     printf("Введите делимое: ");
@@ -14,11 +24,13 @@ int main(){
         return 1;
     }
 
-    void* dl_handle = dlopen("mylib.so", RTLD_LAZY);
+    #ifdef DYNAMIC
+    void* dl_handle = dlopen("libmylib.so", RTLD_LAZY);
     if(dl_handle == NULL){
         printf ("Ошибка загрузки динамической библиотеки\n");
         return 1;
     }
+    
 
     int (*div_foo)(int, int) = dlsym(dl_handle, "Div");
     int (*mod_foo)(int, int) = dlsym(dl_handle, "Mod");
@@ -31,4 +43,15 @@ int main(){
     printf("Остаток от деления: %d\n", (*mod_foo)(a, b));
     
     dlclose(dl_handle);
+    #endif
+
+    #ifdef STATIC
+    printf("Частно от деления: %d\n", Div(a, b));
+    printf("Остаток от деления: %d\n", Mod(a, b));
+    #endif
+
+    #ifdef DYNOSTATIC
+    printf("Частно от деления: %d\n", Div(a, b));
+    printf("Остаток от деления: %d\n", Mod(a, b));
+    #endif
 }
