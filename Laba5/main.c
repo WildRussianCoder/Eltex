@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <dlfcn.h>
+#include <stdlib.h>
 
 #ifdef STATIC
 extern int Mod(int a, int b);
@@ -25,7 +26,7 @@ int main(){
     }
 
     #ifdef DYNAMIC
-    void* dl_handle = dlopen("libmylib.so", RTLD_LAZY);
+    void* dl_handle = dlopen("./libmylib.so", RTLD_LAZY);
     if(dl_handle == NULL){
         printf ("Ошибка загрузки динамической библиотеки\n");
         return 1;
