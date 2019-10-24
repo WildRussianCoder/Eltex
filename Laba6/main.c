@@ -1,30 +1,59 @@
-#include <stdio.h>
+#include <fcntl.h>
 #include <unistd.h>
-#include <sys/types.h>
+#include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
+#include <sys/file.h>
 #include <sys/wait.h>
 
-int gold = 1000;
-int workers;
+#define START_GOLD 100
+#define MAX_POSITIONS_IN_NUMBER 6
+#define PERMISSIONS 0755
 
-int main(int argc, char** argv){
-    printf("Укажите кол-во рабочих: ");
+
+char buf[MAX_POSITIONS_IN_NUMBER + 1];
+
+int main(){
+    srand(time(NULL));
+    int fd = open("./tmp", O_CREAT | O_RDWR | O_ASYNC | O_TRUNC, PERMISSIONS);
+
+    
+    sprintf(buf, "%d", START_GOLD);
+    printf("Начальное количество золота: %s\n", buf);
+
+    write(fd, buf, sizeof(buf));
+    lseek(fd, 0, SEEK_SET);
+
+    int workers;
+    printf("Укажите начальное кол-во рабочих: ");
     scanf("%d", &workers);
 
-    while(gold > 0){
-        printf("Текущее количество золота: %d\n", gold);
-        if(workers > 0){
-            if(fork() == 0) execl("./unit", "unit", NULL);
-            workers--;
-            gold -= 10;
-        }
-        else{
-            wait(NULL);
-            if(fork() == 0) execl("./unit", "unit", NULL);
-            gold -= 10;
-        }
+    int* t = calloc(workers, sizeof(int));
+    for(int i = 0; i < workers; i++){
+        t[i] = 1 + rand() % 4;
+        for(int i = 0; i < 10000; i++);
     }
 
-    printf("Золотой рудник истощился!\n");
+    for(int i = 0; i < workers; i++){
+        char arg[3];
+        sprintf(arg, "%d", t[i]);
+        if(fork() == 0) execl("./worker", "worker", arg, NULL);
+    }
 
-    return 0;
+    while(1){
+        sleep(1);
+        flock(fd, LOCK_EX);
+        read(fd, buf, sizeof(buf));
+        lseek(fd, 0, SEEK_SET);
+        int g = atoi(buf);
+        if(g <= 0) break;
+        printf("В шахте осталось: %s\n", buf);
+        flock(fd, LOCK_UN);
+    }
+
+    printf("Золотой рудник иссяк\n");
+
+    flock(fd, LOCK_UN);
+    free(t);
+    close(fd);
 }
