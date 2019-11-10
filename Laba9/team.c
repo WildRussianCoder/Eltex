@@ -68,7 +68,7 @@ int main(int argc, char** argv){
         else teams[num] += team_heal;
         printf("В команде %d пополнение: %d\n", num, team_heal);
 
-        usleep(100000);
+        usleep(50000);
 
         semop(sem_id, &sem_unlock, 1);
     }
