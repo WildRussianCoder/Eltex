@@ -11,7 +11,7 @@
 #include <pthread.h>
 
 #define Q_NAME "/NameOfMQ"
-#define MAX_MSG 10
+#define MAX_MSG 10 * 3
 #define MAX_MSG_SIZE 4096
 #define CLIENT_Q 10
 #define LISTENER_TCP_PORT 60000
